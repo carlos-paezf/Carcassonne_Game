@@ -40,7 +40,7 @@ export class Board {
             throw new Error( 'There is already a tile placed at this location' );
         }
 
-        if ( this.isInvalidPlacement( tile, row, col ) ) {
+        if ( this.isInvalidPlacement( tile, +row, +col ) ) {
             throw new Error( 'Invalid tile placement' );
         }
 
@@ -50,7 +50,7 @@ export class Board {
 
     public isInvalidPlacement ( tile: Tile, row: number, column: number ): boolean {
         const neighborsTiles = VonNeumannNeighborhoods.getNeighborhood( {
-            row, column,
+            row: Number( row ), column: Number( column ),
             maxRows: this.size, maxColumns: this.size
         } );
 
