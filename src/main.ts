@@ -60,74 +60,115 @@ document.getElementById( 'discard' )!.addEventListener( 'click', () => {
 } );
 
 
-const tiles = document.querySelectorAll( '.tile' );
-const empties = document.querySelectorAll( '.empty' );
-let draggedItem: HTMLElement | null = null;
+const tiles = document.querySelectorAll<HTMLDivElement>( '.tile' );
+const empties = document.querySelectorAll<HTMLTableRowElement>( '.empty' );
+
+
+/*
+type HTMLElementEvent<T extends HTMLElement> = Event & { target: T; };
+
+let draggedItem: string | null = null;
 let tileSelected: number;
 
 
 tiles.forEach( tile => {
-    tile.addEventListener( 'dragstart', dragStart );
-    tile.addEventListener( 'dragend', dragEnd );
+    tile.addEventListener( 'dragstart', dragStart, false );
+    tile.addEventListener( 'dragend', dragEnd, false );
 } );
 
 
 empties.forEach( empty => {
-    empty.addEventListener( 'dragover', dragOver );
-    empty.addEventListener( 'dragenter', dragEnter );
-    empty.addEventListener( 'dragleave', dragLeave );
-    empty.addEventListener( 'drop', dragDrop );
+    empty.addEventListener( 'dragover', dragOver, false );
+    empty.addEventListener( 'dragenter', dragEnter, false );
+    empty.addEventListener( 'dragleave', dragLeave, false );
+    empty.addEventListener( 'drop', dragDrop, false );
 } );
 
 
-function dragStart ( e: any ) {
-    draggedItem = e.target as HTMLElement;
-    e.target.classList.add( 'hold' );
+function dragStart ( event: DragEvent ) {
+    resetEventsDragAndDrop();
 
-    setTimeout( () => e.target!.className = 'invisible', 0 );
+    draggedItem = ( event.currentTarget as HTMLDivElement ).innerText;
 
-    tileSelected = e.target!.id;
-    console.log( draggedItem.innerText );
-    e.target.removeEventListener( 'dragover', dragEnd );
+    ( event.currentTarget as HTMLDivElement )?.classList.add( 'hold' );
+
+    setTimeout( () => ( event.currentTarget as HTMLDivElement ).className = 'invisible', 0 );
+
+    tileSelected = +( event.currentTarget as HTMLDivElement ).id;
 }
 
 
-function dragEnd ( e: any ) {
-    e.target.className = 'tile';
-    console.log( draggedItem!.innerText );
+function dragEnd ( event: DragEvent ) {
+    ( event.currentTarget as HTMLDivElement ).className = 'tile';
+    resetEventsDragAndDrop();
 }
 
 
-function dragOver ( e: Event ) {
-    e.preventDefault();
+function dragOver ( event: DragEvent ) {
+    event.preventDefault();
 }
 
 
-function dragEnter ( this: any, e: Event ) {
-    e.preventDefault();
-    this.classList.add( 'hovered' );
-}
-
-
-function dragLeave ( this: any ) {
-    this.classList.remove( 'hovered' );
-    this.classList.add( 'empty' );
-}
-
-
-function dragDrop ( e: any ) {
-    e.target.className = 'column fill';
-
-    const [ row, col ] = e.target.id.split( '-' );
-
-    try {
-        game.placeTile( game.hand[ tileSelected ], row, col );
-        e.target.innerText = draggedItem?.innerText;
-    } catch ( error ) {
-        e.target.className = 'column empty';
-        draggedItem = null;
-        Events.createNotification( error );
-    } finally {
-        updateGame();
+function dragEnter ( event: DragEvent ) {
+    event.preventDefault();
+    if ( !( event.currentTarget as HTMLDivElement ).classList.contains( 'fill' ) ) {
+        ( event.currentTarget as HTMLDivElement ).classList.add( 'hovered' );
     }
 }
+
+
+function dragLeave ( event: DragEvent ) {
+    if ( !( event.currentTarget as HTMLDivElement ).classList.contains( 'fill' ) ) {
+        ( event.currentTarget as HTMLDivElement ).classList.remove( 'hovered' );
+        ( event.currentTarget as HTMLDivElement ).classList.add( 'empty' );
+    }
+}
+
+
+function dragDrop ( event: DragEvent ) {
+    const [ row, col ] = ( event.currentTarget as HTMLDivElement ).id.split( '-' );
+
+    try {
+        game.placeTile( game.hand[ tileSelected ], +row, +col );
+        ( event.currentTarget as HTMLDivElement ).className = 'column fill';
+        ( event.currentTarget as HTMLDivElement ).innerText = draggedItem!;
+        updateGame();
+
+        // resetEventsDragAndDrop();
+    } catch ( error ) {
+        // draggedItem = null;
+        if ( !( event.currentTarget as HTMLDivElement ).classList.contains( 'fill' ) ) {
+            ( event.currentTarget as HTMLDivElement ).className = 'column empty';
+        }
+        Events.createNotification( error );
+
+        resetEventsDragAndDrop();
+    }
+}
+
+
+function resetEventsDragAndDrop () {
+    draggedItem = null;
+
+    tiles.forEach( tile => {
+        tile.removeEventListener( 'dragstart', dragStart, false );
+        tile.removeEventListener( 'dragend', dragEnd, false );
+
+        tile.addEventListener( 'dragstart', dragStart, false );
+        tile.addEventListener( 'dragend', dragEnd, false );
+    } );
+
+    empties.forEach( empty => {
+        empty.removeEventListener( 'dragover', dragOver, false );
+        empty.removeEventListener( 'dragenter', dragEnter, false );
+        empty.removeEventListener( 'dragleave', dragLeave, false );
+        empty.removeEventListener( 'drop', dragDrop, false );
+
+        empty.addEventListener( 'dragover', dragOver, false );
+        empty.addEventListener( 'dragenter', dragEnter, false );
+        empty.addEventListener( 'dragleave', dragLeave, false );
+        empty.addEventListener( 'drop', dragDrop, false );
+    } );
+} */
+
+// TODO: Implementar selección y ubicación por inputs
