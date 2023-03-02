@@ -10,23 +10,21 @@
 
     <body>
         <div id="app">
-            <div>
-                <form id="form" type="submit">
-                    <label for="size">Tamaño del tablero: </label>
-                    <input type="number" id="size" value="9">
-                </form>
+            <form id="form" type="submit">
+                <label for="size">Tamaño del tablero: </label>
+                <input type="number" id="size" value="9">
+            </form>
 
-                <div id="turn"></div>
+            <div id="turn"></div>
 
-                <table id="game"></table>
+            <table id="game"></table>
 
-                <section>
-                    <div id="hand"></div>
-                    <button id="discard">Discard Hand</button>
-                </section>
+            <section>
+                <div id="hand"></div>
+                <button id="discard">Discard Hand</button>
+            </section>
 
-                <div id="toasts"></div>
-            </div>
+            <span id="toasts"></span>
         </div>
 
         <script type="module" src="/src/main.ts"></script>
