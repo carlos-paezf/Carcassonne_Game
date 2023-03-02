@@ -5,8 +5,13 @@ export class Events {
     constructor ( private game: Game ) { }
 
 
-    updateTurnAndHand () {
-        document.getElementById( 'turn' )!.innerHTML = `Actual Turn: ${ this.game.turn } - Number of discards remaining: ${ this.game.discardsCount }`;
+    updateTurnHandAndScore () {
+        // TODO: Separar lógica en tres métodos para Turno, Mano y Puntaje
+        document.getElementById( 'turn' )!.innerText = `
+            Actual Turn: ${ this.game.turn } - 
+            Tiles in the deck: ${ this.game.tilesInDeck } -
+            Number of discards remaining: ${ this.game.discardsCounter }
+        `;
     }
 
 
@@ -30,7 +35,7 @@ export class Events {
             return rowHtml;
         };
 
-        this.game.board.tiles.forEach( ( row, index ) => {
+        this.game.board.forEach( ( row, index ) => {
             const rowHtml = generateRowHTML( row, index );
             tableBody.appendChild( rowHtml );
         } );

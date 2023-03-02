@@ -18,7 +18,7 @@ function initGame () {
         game = new Game( size ?? 9 );
         const events = new Events( game );
 
-        events.updateTurnAndHand();
+        events.updateTurnHandAndScore();
         events.generateBoard();
         events.generateCardTiles();
     } catch ( error ) {
@@ -33,7 +33,7 @@ function updateGame () {
     try {
         const events = new Events( game );
 
-        events.updateTurnAndHand();
+        events.updateTurnHandAndScore();
         events.generateCardTiles();
     } catch ( error ) {
         Events.createNotification( error );
