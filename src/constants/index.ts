@@ -1,15 +1,13 @@
-export const TILE_PER_TURN = 1;
-
-
-export const MIN_ABBEY_INTERVAL = 15;
-
-
-export const MIN_CITY_INTERVAL = 3;
+export const tileInterval = {
+    road: ( 9 / 15 ),
+    city: ( 5 / 15 ),
+    abbey: ( 1 / 15 )
+};
 
 
 export enum TileType {
-    CITY = 'CITY',
     ROAD = 'ROAD',
+    CITY = 'CITY',
     ABBEY = 'ABBEY'
 };
 
@@ -20,4 +18,12 @@ export enum RoadDirection {
     FOUR_WAY = 'FOUR_WAY',
     THREE_WAY = 'THREE_WAY',
     CORNER = 'CORNER'
+};
+
+
+export const tilePoint = {
+    road: 1,
+    abbey: 1,
+    city: 2,
+    extraPoint: 1
 };
