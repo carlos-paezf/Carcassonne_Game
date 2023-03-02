@@ -25,5 +25,5 @@ export const tilePoint = {
     road: 1,
     abbey: 1,
     city: 2,
-    extraPoint: 1
+    chain: 1
 };
