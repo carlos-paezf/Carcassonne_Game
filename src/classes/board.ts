@@ -1,4 +1,4 @@
-import { TileType } from "../constants";
+/* import { TileType } from "../constants";
 import { Tile } from "./tile";
 import { RoadDirection } from '../constants/index';
 import { VonNeumannNeighborhoods } from './von-neumann-neighborhoods';
@@ -23,13 +23,6 @@ export class Board {
         this.tiles[ middle ][ middle ] = startingTile;
     }
 
-
-    /**
-     * This function returns a tile from the tiles array at the specified row and column
-     * @param {number} row - The row of the tile you want to get.
-     * @param {number} col - number - The column of the tile you want to get.
-     * @returns A Tile object or null.
-     */
     public getTile ( row: number, col: number ): Tile | null {
         return this.tiles[ row ][ col ];
     }
@@ -61,4 +54,6 @@ export class Board {
 
         return false;
     }
-}
+} */
+
+export default null;
