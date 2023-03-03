@@ -52,7 +52,7 @@ document.getElementById( 'form' )!.addEventListener( 'submit', ( e: any ) => {
 
 document.getElementById( 'discard' )!.addEventListener( 'click', () => {
     try {
-        game.discardHand();
+        game._discardHand();
         updateGame();
     } catch ( error ) {
         Events.createNotification( error );

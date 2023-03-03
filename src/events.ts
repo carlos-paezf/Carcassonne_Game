@@ -54,7 +54,7 @@ export class Events {
 
 
     discardHand () {
-        this.game.discardHand();
+        this.game._discardHand();
         this.generateCardTiles();
     }
 
