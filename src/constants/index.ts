@@ -1,3 +1,10 @@
+export enum TileType {
+    ROAD = 'ROAD',
+    CITY = 'CITY',
+    ABBEY = 'ABBEY'
+};
+
+
 export const tileInterval = {
     road: ( 9 / 15 ),
     city: ( 5 / 15 ),
@@ -5,10 +12,11 @@ export const tileInterval = {
 };
 
 
-export enum TileType {
-    ROAD = 'ROAD',
-    CITY = 'CITY',
-    ABBEY = 'ABBEY'
+export const tilePoint = {
+    road: 1,
+    abbey: 1,
+    city: 2,
+    chain: 1
 };
 
 
@@ -18,12 +26,4 @@ export enum RoadDirection {
     FOUR_WAY = 'FOUR_WAY',
     THREE_WAY = 'THREE_WAY',
     CORNER = 'CORNER'
-};
-
-
-export const tilePoint = {
-    road: 1,
-    abbey: 1,
-    city: 2,
-    chain: 1
 };
