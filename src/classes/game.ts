@@ -1,9 +1,12 @@
 import { RoadDirection, tileInterval, tilePoint, TileType } from '../constants';
 import { Tile } from "./tile";
 import { TileGenerator } from './tile-generator';
-import { VonNeumannNeighborhoods } from './von-neumann-neighborhoods';
+import { getNeighborhoodParams, VonNeumannNeighborhoods } from './von-neumann-neighborhoods';
 
 
+/**
+ * "The Game class is responsible for managing the game state."
+*/
 export class Game {
     public turn = 0;
     public score = 0;
@@ -14,30 +17,32 @@ export class Game {
 
     public readonly board: Tile[][] | null[][] = [];
 
-    private tileGenerator = new TileGenerator( {
+    private _tileGenerator = new TileGenerator( {
         roadProbability: tileInterval.road,
         cityProbability: tileInterval.city,
         abbeyProbability: tileInterval.abbey
     } );
 
+    private static startingTile = new Tile( TileType.ROAD, RoadDirection.FOUR_WAY );
 
-    constructor ( private size: number ) {
-        if ( this.size % 2 === 0 ) throw new Error( "Only odd size" );
 
-        this.tilesInDeck = Math.pow( this.size, 2 );
-        this.initGame();
+    constructor ( private _size: number ) {
+        if ( this._size % 2 === 0 ) throw new Error( "Only odd size" );
+
+        this.tilesInDeck = Math.pow( this._size, 2 );
+        this._initGame();
     }
 
 
     /**
      * The function generates a board, sets the turn to 1, and draws 4 tiles.
      */
-    private initGame (): void {
-        this.generateBoard();
+    private _initGame (): void {
+        this._generateBoard();
         this.turn = 1;
 
         for ( let i = 0; i < 4; i++ ) {
-            this.drawTile();
+            this._appendTileToHand();
         }
     }
 
@@ -50,18 +55,17 @@ export class Game {
      * 
      * The last two lines create a new tile and place it in the middle of the board.
      */
-    private generateBoard (): void {
-        for ( let i = 0; i < this.size; i++ ) {
-            this.board[ i ] = [];
-            for ( let j = 0; j < this.size; j++ ) {
-                this.board[ i ][ j ] = null;
-            }
+    private _generateBoard (): void {
+        for ( let i = 0; i < this._size; i++ ) {
+            // this.board[ i ] = [];
+            // for ( let j = 0; j < this.size; j++ ) {
+            //     this.board[ i ][ j ] = null;
+            // }
+            this.board[ i ] = new Array( this._size ).fill( null );
         }
+        const middle = Math.floor( this._size / 2 );
 
-        const startingTile = new Tile( TileType.ROAD, RoadDirection.FOUR_WAY );
-        const middle = Math.floor( this.size / 2 );
-
-        this.board[ middle ][ middle ] = startingTile;
+        this.board[ middle ][ middle ] = Game.startingTile;
     }
 
 
@@ -72,12 +76,12 @@ export class Game {
      * @throws {Error} If there are no more tiles to play
      * @returns {Tile} A new Tile object with a tileType and direction.
      */
-    private generateTile (): Tile {
+    private _generateTile (): Tile {
         if ( this.tilesInDeck === 0 ) throw new Error( 'There are no more cards to play' );
 
         let tileType: TileType;
 
-        tileType = this.tileGenerator.generateTile();
+        tileType = this._tileGenerator.generateRandomTile();
 
         let direction: keyof typeof RoadDirection | undefined;
 
@@ -94,8 +98,8 @@ export class Game {
     /**
      * Drawing a tile from the deck and adding it to the player's hand. 
      */
-    private drawTile (): void {
-        this.hand.push( this.generateTile() );
+    private _appendTileToHand (): void {
+        this.hand.push( this._generateTile() );
     };
 
 
@@ -108,7 +112,7 @@ export class Game {
      * decrement the discard counter, and draw four new tiles.
      * @throws {Error} If there are no more opportunities to discard the hand 
      */
-    public discardHand (): void {
+    public _discardHand (): void {
         if ( this.discardsCounter <= 0 ) throw new Error( 'You cannot discard your current hand' );
 
         this.hand = [];
@@ -116,7 +120,7 @@ export class Game {
         this.discardsCounter -= 1;
 
         for ( let i = 0; i < 4; i++ ) {
-            this.drawTile();
+            this._appendTileToHand();
         }
     }
 
@@ -127,71 +131,118 @@ export class Game {
      * @param {number} col - number - The column of the tile you want to get.
      * @returns The tile at the given row and column.
      */
-    private getTile ( row: number, col: number ): Tile | null {
+    private _getTile ( row: number, col: number ): Tile | null {
         return this.board[ row ][ col ];
     }
 
+
     /**
-     * Updates the game score based on the tile type and its location.
-     * @param tileType - The type of the tile being placed.
-     * @param row - The row of the tile's location.
-     * @param column - The column of the tile's location.
-     * @returns void.
+     * "This function takes a tile type, a neighborhood params, and a number of points, and increases the
+     * score by the number of points for each tile of the given type in the neighborhood."
+     * 
+     * @param tileType - keyof typeof TileType
+     * @param {getNeighborhoodParams} neighborhoodParams - getNeighborhoodParams
+     * @param {number} points - number - the amount of points to add to the score
      */
-    private updateScore ( tileType: keyof typeof TileType, row: number, column: number ): void {
-        if ( tileType === TileType.ROAD ) {
-            this.score += tilePoint.road;
-        }
+    private _increasePoints ( tileType: keyof typeof TileType, neighborhoodParams: getNeighborhoodParams, points: number ): void {
+        const tilesNeighborhood: number[][] = VonNeumannNeighborhoods.getNeighborhood( neighborhoodParams, tileType === TileType.ABBEY );
 
-        else if ( tileType === TileType.CITY ) {
-            this.score += tilePoint.city;
-        }
+        tilesNeighborhood.forEach( ( nt ) => {
+            const tile = this._getTile( nt[ 0 ], nt[ 1 ] );
+            if ( tile?.type === tileType || ( tileType === TileType.ABBEY && tile ) )
+                this.score += points;
+        } );
+    };
 
-        else if ( tileType === TileType.ABBEY ) {
-            const neighborsTiles = VonNeumannNeighborhoods.getAdjacentAndDiagonalNeighborhood( {
-                row: Number( row ), column: Number( column ),
-                maxRows: this.size, maxColumns: this.size
-            } );
 
-            neighborsTiles.forEach( ( nt ) => {
-                if ( this.getTile( nt[ 0 ], nt[ 1 ] ) !== null )
-                    this.score += tilePoint.abbey;
-            } );
+    /**
+     * "The function takes a tile type, row and column as parameters and updates the score based on the
+     * tile type and its neighborhood."
+     * 
+     * The function is called from the following function:
+     * @param tileType - keyof typeof TileType, row: number, column: number
+     * @param {number} points - number - the amount of points to add to the score
+     * @param {number} column - number,
+     */
+    private _updateScore ( tileType: keyof typeof TileType, row: number, column: number ): void {
+        const params: getNeighborhoodParams = {
+            row, column,
+            maxRows: this._size, maxColumns: this._size
+        };
+
+        switch ( tileType ) {
+            case TileType.ROAD:
+                this.score += tilePoint.road;
+                this._increasePoints( TileType.ABBEY, params, tilePoint.abbey );
+                break;
+
+            case TileType.CITY:
+                this.score += tilePoint.city;
+                this._increasePoints( TileType.ABBEY, params, tilePoint.abbey );
+                this._increasePoints( TileType.CITY, params, tilePoint.chain );
+                break;
+
+            case TileType.ABBEY:
+                this.score += tilePoint.abbey;
+                this._increasePoints( TileType.ABBEY, params, tilePoint.abbey );
+                break;
+
+            default:
+                break;
         }
     };
 
 
-    private isInvalidPlacement ( tile: Tile, row: number, column: number ): boolean {
+    /**
+     * Determines if a tile placement is invalid by checking if:
+     * 
+     * The placement is adjacent to at least one tile
+     * The placement is a road tile and all adjacent tiles are not road tiles
+     * 
+     * @param {Tile} tile - The tile to be placed
+     * @param {number} row - The row where the tile will be placed
+     * @param {number} column - The column where the tile will be placed
+     * @returns {boolean} - True if the placement is invalid, false otherwise
+     */
+    private _isInvalidPlacement ( tile: Tile, row: number, column: number ): boolean {
         const neighborsTiles = VonNeumannNeighborhoods.getNeighborhood( {
             row: Number( row ), column: Number( column ),
-            maxRows: this.size, maxColumns: this.size
+            maxRows: this._size, maxColumns: this._size
         } );
 
-        if ( neighborsTiles.every( ( nt ) => this.getTile( nt[ 0 ], nt[ 1 ] ) === null ) )
+        if ( neighborsTiles.every( ( nt ) => this._getTile( nt[ 0 ], nt[ 1 ] ) === null ) )
             return true;
 
         if (
             tile.type === TileType.ROAD &&
-            neighborsTiles.every( ( nt ) => this.getTile( nt[ 0 ], nt[ 1 ] )?.type !== tile.type )
+            neighborsTiles.every( ( nt ) => this._getTile( nt[ 0 ], nt[ 1 ] )?.type !== tile.type )
         ) return true;
 
         return false;
     }
 
 
+    /**
+     * Place a tile on the board at the specified row and column.
+     * @param tile - The tile to place on the board.
+     * @param row - The row where the tile should be placed.
+     * @param col - The column where the tile should be placed.
+     * @throws An error if there is already a tile placed at the specified location.
+     * @throws An error if the tile cannot be legally placed at the specified location.
+     */
     public placeTile ( tile: Tile, row: number, col: number ): void {
-        if ( this.getTile( row, col ) !== null )
+        if ( this._getTile( row, col ) !== null )
             throw new Error( 'There is already a tile placed at this location' );
 
-        if ( this.isInvalidPlacement( tile, +row, +col ) )
+        if ( this._isInvalidPlacement( tile, +row, +col ) )
             throw new Error( 'Invalid tile placement' );
 
         this.board[ row ][ col ] = tile;
         this.hand.splice( this.hand.indexOf( tile ), 1 );
 
         this.turn += 1;
-        this.updateScore( tile.type, row, col );
+        this._updateScore( tile.type, row, col );
 
-        this.drawTile();
+        this._appendTileToHand();
     }
 }
