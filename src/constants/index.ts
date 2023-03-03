@@ -1,3 +1,6 @@
+export const TILES_PER_HAND = 4;
+
+
 export enum TileType {
     ROAD = 'ROAD',
     CITY = 'CITY',
