@@ -30,7 +30,7 @@ export class TileGenerator {
      * 
      * @returns A random tile type.
      */
-    public generateTile (): TileType {
+    public generateRandomTile (): TileType {
         const { roadProbability, cityProbability, abbeyProbability } = this.tilesProbability;
 
         const randomNum = Math.random();
