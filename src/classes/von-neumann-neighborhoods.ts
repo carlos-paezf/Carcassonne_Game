@@ -1,4 +1,4 @@
-type getNeighborhoodParams = {
+export type getNeighborhoodParams = {
     row: number,
     column: number,
     maxRows: number,
@@ -17,7 +17,7 @@ export class VonNeumannNeighborhoods {
      * @param {number} [neighborhoodRadius = 1] - The radius of the neighborhood to be generated  
      * @returns {number[][]} - An array of arrays, each containing the row and column indices of a neighboring cell.
      */
-    public static getNeighborhood ( { row, column, maxRows, maxColumns }: getNeighborhoodParams, neighborhoodRadius: number = 1 ): number[][] {
+    private static getAdjacentNeighborhood ( { row, column, maxRows, maxColumns }: getNeighborhoodParams, neighborhoodRadius: number = 1 ): number[][] {
         const neighborhood: number[][] = [];
 
         for ( let i = -neighborhoodRadius; i <= neighborhoodRadius; i++ ) {
@@ -50,17 +50,19 @@ export class VonNeumannNeighborhoods {
      * @returns {number[][]} An array containing the row and column numbers of the
      * cells that are adjacent and diagonal to the specified cell.
      */
-    public static getAdjacentAndDiagonalNeighborhood ( params: getNeighborhoodParams ): number[][] {
-        const initNeighborhood: number[][] = this.getNeighborhood( params, 2 );
+    public static getNeighborhood ( params: getNeighborhoodParams, includeDiagonal: boolean = false ): number[][] {
+        const manhattanDistance = includeDiagonal ? 2 : 1;
 
-        const neighborhood: number[][] = [];
+        const adjacentNeighborhood: number[][] = this.getAdjacentNeighborhood( params, manhattanDistance );
 
-        initNeighborhood.forEach( ( cell: number[] ) => {
-            if ( !( Math.abs( cell[ 0 ] ) - Math.abs( params.row ) > 1 || Math.abs( cell[ 1 ] ) - Math.abs( params.column ) > 1 ) ) {
-                neighborhood.push( cell );
+        const adjacentAndDiagonalNeighborhood: number[][] = [];
+
+        adjacentNeighborhood.forEach( ( cell: number[] ) => {
+            if ( !( Math.abs( cell[ 0 ] - params.row ) > 1 || Math.abs( cell[ 1 ] - params.column ) > 1 ) ) {
+                adjacentAndDiagonalNeighborhood.push( cell );
             }
         } );
 
-        return neighborhood;
+        return adjacentAndDiagonalNeighborhood;
     }
 }
