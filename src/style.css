@@ -38,6 +38,7 @@ body {
     margin: 10px;
     border: solid 3px black;
     background: rgba(0, 0, 0, .2);
+    color: rgba(255, 255, 255, .3);
 }
 
 .hold {
@@ -89,10 +90,6 @@ body {
     width: 25%;
     height: 50px;
     padding: 2rem 0;
-}
-
-.tile {
-    z-index: 10;
 }
 
 #toasts {
