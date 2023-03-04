@@ -5,15 +5,19 @@ export class Deck {
         this._tilesInDeck = Math.pow( this.boardSize, 2 );
     }
 
+    /**
+     * This function returns the number of tiles in the deck.
+     * @returns The tilesInDeck array.
+     */
     get getTilesInDeck () {
         return this._tilesInDeck;
     }
 
-    public incrementTilesInDeck ( value: number ) {
+    /**
+     * The setter function for the tilesInDeck property
+     * @param {number} value - number - The value to add to the tilesInDeck property.
+     */
+    set setTilesInDeck ( value: number ) {
         this._tilesInDeck += value;
-    }
-
-    public discountTilesInDeck ( value: number ) {
-        this._tilesInDeck -= value;
     }
 }
