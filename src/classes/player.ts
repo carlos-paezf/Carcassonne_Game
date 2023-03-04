@@ -1,5 +1,6 @@
-import { TileType, tilePoint } from "../constants";
+import { TILES_PER_HAND, TileType, tilePoint } from "../constants";
 import { Board } from "./board";
+import { Deck } from './deck';
 import { Tile } from "./tile";
 import { VonNeumannNeighborhoods, getNeighborhoodParams } from './von-neumann-neighborhoods';
 
@@ -9,7 +10,11 @@ export class Player {
     public score = 0;
     public turn = 0;
 
-    constructor ( public name: string, private board: Board ) { }
+    constructor (
+        public name: string,
+        private board: Board,
+        private deck: Deck
+    ) { }
 
 
     /**
@@ -22,13 +27,17 @@ export class Player {
      * @throws {Error} If there are no more opportunities to discard the hand 
      */
     public discardHand (): void {
-        if ( this.discardsCounter <= 0 ) throw new Error( 'You cannot discard your current hand' );
+        if ( this.discardsCounter <= 0 )
+            throw new Error( 'You cannot discard your current hand. You already used the maximum amount of discards' );
+
+        if ( this.deck.getTilesInDeck < TILES_PER_HAND )
+            throw new Error( 'You cannot discard your current hand. There are not enough cards to distribute a new hand.' );
 
         this.hand = [];
         this.turn += 1;
         this.discardsCounter -= 1;
 
-        for ( let i = 0; i < 4; i++ ) {
+        for ( let i = 0; i < TILES_PER_HAND; i++ ) {
             this.appendTileToHand();
         }
     }
@@ -46,7 +55,11 @@ export class Player {
      * Drawing a tile from the deck and adding it to the player's hand. 
      */
     public appendTileToHand (): void {
+        if ( this.deck.getTilesInDeck === 0 ) throw new Error( 'There are no more cards to play' );
+
         this.hand.push( Tile.generateTile() );
+
+        this.deck.setTilesInDeck = -1;
     };
 
 
