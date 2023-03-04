@@ -34,8 +34,6 @@ export class Tile implements ITile {
      * @returns {Tile} A new Tile object with a tileType and direction.
      */
     public static generateTile (): Tile {
-        // if ( this.tilesInDeck === 0 ) throw new Error( 'There are no more cards to play' );
-
         let tileType: TileType;
 
         tileType = this._tileGenerator.generateRandomTile();
@@ -47,7 +45,6 @@ export class Tile implements ITile {
             direction = directions[ Math.floor( Math.random() * directions.length ) ] as keyof typeof RoadDirection;
         }
 
-        // this.tilesInDeck--;
         return new Tile( tileType, direction );
     }
 
