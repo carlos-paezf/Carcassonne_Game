@@ -1,29 +1,21 @@
-import { RoadDirection, TileType, tileInterval } from "../constants";
 import { Board } from "./board";
+import { Deck } from "./deck";
 import { Player } from "./player";
 import { Tile } from "./tile";
-import { TileGenerator } from "./tile-generator";
 
 
 export class GameV2 {
-    public readonly player: Player;
-    public readonly board: Board;
-    public tilesInDeck: number;
-
-    private _tileGenerator = new TileGenerator( {
-        roadProbability: tileInterval.road,
-        cityProbability: tileInterval.city,
-        abbeyProbability: tileInterval.abbey
-    } );
+    private readonly _board: Board;
+    private readonly _deck: Deck;
+    private readonly _player: Player;
 
 
     constructor ( private _size: number, private _playerName: string ) {
         if ( this._size % 2 === 0 ) throw new Error( "Only odd size" );
 
-        this.tilesInDeck = Math.pow( this._size, 2 );
-
-        this.board = new Board( this._size );
-        this.player = new Player( this._playerName, this.board );
+        this._board = new Board( this._size );
+        this._deck = new Deck( this._size );
+        this._player = new Player( this._playerName, this._board, this._deck );
 
         this._initGame();
     }
@@ -34,39 +26,74 @@ export class GameV2 {
      */
     private _initGame (): void {
         for ( let i = 0; i < 4; i++ ) {
-            this.player.appendTileToHand();
+            this._player.appendTileToHand();
         }
     }
 
 
     /**
-     * Generate a tile with a random type and direction. 
-     * It also discounts the number of tiles in the deck.
-     * 
-     * @throws {Error} If there are no more tiles to play
-     * @returns {Tile} A new Tile object with a tileType and direction.
+     * @returns The board object.
      */
-    public _generateTile (): Tile {
-        if ( this.tilesInDeck === 0 ) throw new Error( 'There are no more cards to play' );
-
-        let tileType: TileType;
-
-        tileType = this._tileGenerator.generateRandomTile();
-
-        let direction: keyof typeof RoadDirection | undefined;
-
-        if ( tileType === TileType.ROAD ) {
-            const directions = Object.keys( RoadDirection );
-            direction = directions[ Math.floor( Math.random() * directions.length ) ] as keyof typeof RoadDirection;
-        }
-
-        this.tilesInDeck--;
-        return new Tile( tileType, direction );
+    get getBoard () {
+        return this._board.getBoard;
     }
 
+
+    /**
+     * @returns The hand of the player.
+     */
+    get getHand () {
+        return this._player.hand;
+    }
+
+
+    /**
+     * @returns The turn of the player.
+     */
+    get getTurn () {
+        return this._player.turn;
+    }
+
+
+    /**
+     * @returns The tilesInDeck array
+     */
+    get getTilesInDeck () {
+        return this._deck.getTilesInDeck;
+    }
+
+
+    /**
+     * @returns The discardsCounter property of the player object.
+     */
+    get getDiscardsCounter () {
+        return this._player.discardsCounter;
+    }
+
+
+    /**
+     * @returns The score of the player.
+     */
+    get getScore () {
+        return this._player.score;
+    }
+
+
+    /**
+     * This function places a tile on the board, updates the player's hand, and updates the player's
+     * score.
+     * @param {Tile} tile - Tile - The tile that the player is playing
+     * @param {number} row - number - the row the tile is being placed in
+     * @param {number} col - number - the column the tile is being placed in
+     */
     public playTile ( tile: Tile, row: number, col: number ) {
-        this.board.placeTile( tile, row, col );
-        this.player.updateHand( tile );
-        this.player.updateScore( tile.type, row, col, this._size );
+        this._board.placeTile( tile, row, col );
+        this._player.updateHand( tile );
+        this._player.updateScore( tile.type, row, col, this._size );
+    }
+
+
+    public discardHand () {
+        this._player.discardHand();
     }
 }
