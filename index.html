@@ -10,17 +10,57 @@
 
     <body>
         <div id="app">
-            <form id="form" type="submit">
-                <label for="size">Tamaño del tablero: </label>
-                <input type="number" id="size" value="9">
-            </form>
+            <section>
+                <form id="form" type="submit">
+                    <label for="size">Board Size: </label>
+                    <input type="number" id="size" min="3" value="9">
+                    <button type="submit">Create Board</button>
+                </form>
+            </section>
 
-            <div id="turn"></div>
+            <section id="infoGame">
+                <table>
+                    <thead>
+                        <tr>
+                            <th class="">Actual Turn</th>
+                            <th class="">Tiles in Deck</th>
+                            <th class="">Number of discards remaining</th>
+                            <th class="">Score</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="" id="turn"></td>
+                            <td class="" id="tiles"></td>
+                            <td class="" id="discards"></td>
+                            <td class="" id="score"></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
 
-            <table id="game"></table>
+            <section>
+                <table id="game"></table>
+            </section>
 
             <section>
                 <div id="hand"></div>
+                <div class="options">
+                    <span>Selected Tile: </span>
+                    <form id="play" type="submit">
+                        <div>
+                            <label for="pos-x">Input the X position</label>
+                            <input id="pos-x" type="number" min="0">
+                        </div>
+                        <div>
+                            <label for="pos-y">Input the Y position</label>
+                            <input id="pos-y" type="number" min="0">
+                        </div>
+
+                        <button type="submit">Place Tile on the Board</button>
+                    </form>
+                </div>
+
                 <button id="discard">Discard Hand</button>
             </section>
 
