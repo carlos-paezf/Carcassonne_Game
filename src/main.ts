@@ -1,49 +1,47 @@
-import { Game } from './classes';
-import { GameV2 } from './classes/game2';
+// import { Game } from './classes';
 import { Events } from './events';
 import { EventsV2 } from './events2';
 import './style.css';
 
 
+const inputSize: HTMLInputElement = document.getElementById( "size" )! as HTMLInputElement;
+const inputName: HTMLInputElement = document.getElementById( "name" )! as HTMLInputElement;
+
 let size: number;
+let name: string;
+let events: EventsV2;
 
 
-const input: HTMLInputElement = document.getElementById( "size" )! as HTMLInputElement;
-size = +input.value;
+size = +inputSize.value;
+name = inputName.value;
 
-
-let game: GameV2;
-
-function initGame () {
-    try {
-        game = new GameV2( size, 'Carlos' );
-
-        const events = new EventsV2( game );
-
-        events.updateInfoGame();
-        events.generateBoard();
-        events.generateCardTiles();
-    } catch ( error ) {
-        EventsV2.createNotification( error );
-    }
-}
 
 initGame();
 
-function updateGame () {
-    try {
-        const events = new EventsV2( game );
 
-        events.updateInfoGame();
-        events.generateCardTiles();
+function initGame () {
+    try {
+        events = new EventsV2( size, name );
+        events.startGame();
     } catch ( error ) {
         EventsV2.createNotification( error );
     }
 }
 
+
+function updateGame () {
+    try {
+        events.updateGame();
+    } catch ( error ) {
+        EventsV2.createNotification( error );
+    }
+}
+
+
 document.getElementById( 'form' )!.addEventListener( 'submit', ( e: any ) => {
     e.preventDefault();
-    size = +input.value;
+    size = +inputSize.value;
+    name = inputName.value;
 
     document.getElementById( 'game' )!.innerHTML = '';
     initGame();
@@ -52,13 +50,34 @@ document.getElementById( 'form' )!.addEventListener( 'submit', ( e: any ) => {
 
 document.getElementById( 'discard' )!.addEventListener( 'click', () => {
     try {
-        game.discardHand();
+        events.discardHand();
         updateGame();
     } catch ( error ) {
         Events.createNotification( error );
     }
 } );
 
+
+document.getElementById( 'play' )!.addEventListener( 'submit', ( e: any ) => {
+    e.preventDefault();
+} );
+
+
+document.getElementById( 'close' )!.addEventListener( 'click', () => {
+    events.closeOptions();
+} );
+
+
+
+const tiles = document.querySelectorAll<HTMLButtonElement>( '.tile' );
+// const empties = document.querySelectorAll<HTMLTableRowElement>( '.empty' );
+
+
+tiles.forEach( ( tile, index ) => {
+    tile.addEventListener( 'click', () => {
+        events.openOptions( index );
+    } );
+} );
 
 // let game: Game;
 
@@ -107,10 +126,6 @@ document.getElementById( 'discard' )!.addEventListener( 'click', () => {
 //         Events.createNotification( error );
 //     }
 // } );
-
-
-const tiles = document.querySelectorAll<HTMLDivElement>( '.tile' );
-const empties = document.querySelectorAll<HTMLTableRowElement>( '.empty' );
 
 
 /*
