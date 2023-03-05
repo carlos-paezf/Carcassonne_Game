@@ -17,14 +17,14 @@ export class GameV2 {
         this._deck = new Deck( this._size );
         this._player = new Player( this._playerName, this._board, this._deck );
 
-        this._initGame();
+        this._startGame();
     }
 
 
     /**
      * The function generates a board, sets the turn to 1, and draws 4 tiles.
      */
-    private _initGame (): void {
+    private _startGame (): void {
         for ( let i = 0; i < 4; i++ ) {
             this._player.appendTileToHand();
         }
