@@ -18,6 +18,7 @@ export class EventsV2 {
     }
 
     updateGame () {
+        document.getElementById( 'board-tiles' )?.remove();
         this.generateBoard();
         this.updateInfoGame();
         this.generateCardTiles();
@@ -36,6 +37,7 @@ export class EventsV2 {
 
     generateBoard () {
         const tableBody = document.createElement( 'tbody' );
+        tableBody.id = 'board-tiles';
 
         const generateRowHTML = ( row: ( Tile | null )[], indexRow: number ): HTMLTableRowElement => {
             const cellsHtml = row.map( ( cell, indexCol ) => {
@@ -64,11 +66,16 @@ export class EventsV2 {
 
 
     generateCardTiles () {
+        const hand = document.getElementById( 'hand' ) as HTMLDivElement;
+
         const tiles = this.game.getHand.map( ( tile, index ) => `
             <button class="tile btn" id="${ index }">${ tile.toString }</button>
         `);
 
-        document.getElementById( 'hand' )!.innerHTML = tiles.join( '' );
+        hand.innerHTML = tiles.join( '' );
+
+        this.removeTileEvents();
+        this.addTilesEvents();
     }
 
 
@@ -88,15 +95,10 @@ export class EventsV2 {
         document.getElementById( 'info-tile' )!.textContent = `${ selectedTile.toString }`;
 
         ( document.getElementById( 'play' ) as HTMLFormElement ).addEventListener( 'submit', () => {
-            console.log( 'enviado' );
             const row = +( document.getElementById( 'pos-x' ) as HTMLInputElement ).value;
             const col = +( document.getElementById( 'pos-y' ) as HTMLInputElement ).value;
             this.playTile( selectedTile, row, col );
         } );
-
-        this.updateGame();
-
-        // TODO: Evaluar disponibilidad y resetear eventos
     }
 
 
@@ -105,8 +107,36 @@ export class EventsV2 {
     }
 
 
+    addTilesEvents () {
+        const tiles = document.querySelectorAll<HTMLButtonElement>( '.tile' );
+
+        tiles.forEach( ( tile, index ) => {
+            tile.addEventListener( 'click', () => {
+                this.openOptions( index );
+            } );
+        } );
+    }
+
+
+    removeTileEvents () {
+        const tiles = document.querySelectorAll<HTMLButtonElement>( '.tile' );
+
+        tiles.forEach( ( tile, index ) => {
+            tile.removeEventListener( 'click', () => {
+                this.openOptions( index );
+            } );
+        } );
+    }
+
+
     playTile ( tile: Tile, row: number, col: number ) {
-        this.game.playTile( tile, row, col );
+        try {
+            this.game.playTile( tile, row, col );
+            this.updateGame();
+            this.closeOptions();
+        } catch ( error: any ) {
+            EventsV2.createNotification( error.message );
+        }
     }
 
 
@@ -126,6 +156,6 @@ export class EventsV2 {
 
         toasts.appendChild( notification );
 
-        setTimeout( () => { notification.remove(); }, 3000 );
+        setTimeout( () => { notification.remove(); }, 5000 );
     }
 }
