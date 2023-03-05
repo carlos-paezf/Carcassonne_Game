@@ -26,6 +26,10 @@ export class Tile implements ITile {
         }
     }
 
+    get toString () {
+        return `${ this.type }${ this.direction ? ` - ${ this.direction }` : '' }`;
+    }
+
     /**
      * Generate a tile with a random type and direction. 
      * It also discounts the number of tiles in the deck.
