@@ -1,5 +1,7 @@
 import { Game } from './classes';
+import { GameV2 } from './classes/game2';
 import { Events } from './events';
+import { EventsV2 } from './events2';
 import './style.css';
 
 
@@ -10,36 +12,34 @@ const input: HTMLInputElement = document.getElementById( "size" )! as HTMLInputE
 size = +input.value;
 
 
-let game: Game;
-
+let game: GameV2;
 
 function initGame () {
     try {
-        game = new Game( size ?? 9 );
-        const events = new Events( game );
+        game = new GameV2( size, 'Carlos' );
 
-        events.updateTurnHandAndScore();
+        const events = new EventsV2( game );
+
+        events.updateInfoGame();
         events.generateBoard();
         events.generateCardTiles();
     } catch ( error ) {
-        Events.createNotification( error );
+        EventsV2.createNotification( error );
     }
 }
 
 initGame();
 
-
 function updateGame () {
     try {
-        const events = new Events( game );
+        const events = new EventsV2( game );
 
-        events.updateTurnHandAndScore();
+        events.updateInfoGame();
         events.generateCardTiles();
     } catch ( error ) {
-        Events.createNotification( error );
+        EventsV2.createNotification( error );
     }
 }
-
 
 document.getElementById( 'form' )!.addEventListener( 'submit', ( e: any ) => {
     e.preventDefault();
@@ -52,12 +52,61 @@ document.getElementById( 'form' )!.addEventListener( 'submit', ( e: any ) => {
 
 document.getElementById( 'discard' )!.addEventListener( 'click', () => {
     try {
-        game._discardHand();
+        game.discardHand();
         updateGame();
     } catch ( error ) {
         Events.createNotification( error );
     }
 } );
+
+
+// let game: Game;
+
+// function initGame () {
+//     try {
+//         game = new Game( size ?? 9 );
+//         const events = new Events( game );
+
+//         events.updateTurnHandAndScore();
+//         events.generateBoard();
+//         events.generateCardTiles();
+//     } catch ( error ) {
+//         Events.createNotification( error );
+//     }
+// }
+
+// initGame();
+
+
+// function updateGame () {
+//     try {
+//         const events = new Events( game );
+
+//         events.updateTurnHandAndScore();
+//         events.generateCardTiles();
+//     } catch ( error ) {
+//         Events.createNotification( error );
+//     }
+// }
+
+
+// document.getElementById( 'form' )!.addEventListener( 'submit', ( e: any ) => {
+//     e.preventDefault();
+//     size = +input.value;
+
+//     document.getElementById( 'game' )!.innerHTML = '';
+//     initGame();
+// } );
+
+
+// document.getElementById( 'discard' )!.addEventListener( 'click', () => {
+//     try {
+//         game._discardHand();
+//         updateGame();
+//     } catch ( error ) {
+//         Events.createNotification( error );
+//     }
+// } );
 
 
 const tiles = document.querySelectorAll<HTMLDivElement>( '.tile' );

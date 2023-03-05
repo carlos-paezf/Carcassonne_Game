@@ -1,15 +1,18 @@
+@import url('https://fonts.googleapis.com/css?family=Muli&display=swap');
+
 * {
     box-sizing: border-box;
+    user-select: none;
 }
 
 :root {
-    font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+    font-family: Muli, Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
     line-height: 1.5;
     font-weight: 400;
 
     color-scheme: light dark;
-    color: rgba(255, 255, 255, 0.87);
-    background-color: #242424;
+    color: #242424;
+    background-color: #E1E1E5;
 
     font-synthesis: none;
     text-rendering: optimizeLegibility;
@@ -19,26 +22,177 @@
 }
 
 body {
-    margin: 0;
-    display: flex;
+    margin: 0 auto;
     place-items: center;
-    min-width: 320px;
+    height: 100vh;
     min-height: 100vh;
+    width: 100%;
+    min-width: 320px;
 }
 
-
 #app {
-    max-width: 1280px;
-    margin: 0 auto;
-    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
+    padding: 0 3rem;
+}
+
+section {
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    justify-content: center;
+    width: 100%;
+    margin: 10px 0;
+}
+
+form {
+    width: 100%;
+    display: flex;
+    align-items: center;
+}
+
+.form-group {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.form-control {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    padding: .5rem;
+}
+
+input {
+    color: inherit;
+    padding: .5rem;
+    border-radius: 5px;
+    border: none;
+    background-color: rgba(0, 0, 0, .15);
+    width: 300px;
+    text-align: center;
+    letter-spacing: .5px;
+    font-size: 15px;
+}
+
+#setting-game form {
+    justify-content: space-around;
+}
+
+.btn {
+    padding: .6rem;
+    width: 250px;
+    border-radius: 5px;
+    font-size: 14px;
+}
+
+.btn-success {
+    background-color: #0c5c00;
+}
+
+.btn-danger {
+    background-color: rgb(105, 0, 0);
+}
+
+.info-game {
+    width: 100%;
+    border: 1px solid;
+}
+
+.info-game th {
+    background: rgba(10, 10, 10);
+    color: rgba(255, 255, 255)
+}
+
+.info-game td {
     text-align: center;
 }
 
+#tiled-hand {
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+}
+
+#hand {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    justify-content: center;
+    border: 1px solid #213547;
+    bottom: 0;
+    margin-right: 1rem;
+}
+
+#tiles {
+    display: flex;
+    flex-direction: row;
+}
+
+#tiles-options {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    place-items: center;
+    background-color: rgba(0, 0, 0, .5);
+    z-index: 100;
+    position: absolute;
+    top: -10px;
+    left: 0;
+}
+
+.options {
+    display: flex;
+    flex-direction: column;
+    border: 1px solid rgba(255, 255, 255, .9);
+    width: 500px;
+    padding: 3rem;
+    border-radius: 10px;
+    box-shadow: 0px 2px 10px rgba(255, 255, 255, .7);
+    background: white;
+    position: relative;
+}
+
+.options i {
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    font-size: 2rem;
+    color: red;
+    cursor: pointer;
+}
+
+.options form {
+    flex-direction: column;
+}
+
+.options .form-group {
+    flex-direction: row;
+    margin: 1rem 0;
+}
+
+.options .form-control {
+    margin: 1rem;
+    align-items: center;
+}
+
+.options input {
+    margin-top: 1rem;
+    width: 100px;
+    font-size: 22px;
+}
+
+.options input:focus::placeholder {
+    color: transparent;
+}
+
 .empty {
-    margin: 10px;
-    border: solid 3px black;
-    background: rgba(0, 0, 0, .2);
-    color: rgba(255, 255, 255, .3);
+    background: rgba(40, 40, 40, .2);
+    color: rgba(0, 0, 0, .6);
 }
 
 .hold {
@@ -51,12 +205,8 @@ body {
     border-style: dashed;
 }
 
-#turn {
-    margin-bottom: 1rem;
-}
-
 .row {
-    height: 75px;
+    height: 55px;
 }
 
 .column {
@@ -65,23 +215,6 @@ body {
     font-size: 12px;
 }
 
-#hand {
-    display: flex;
-    flex-direction: row;
-    width: 100%;
-    justify-content: center;
-    /* padding: .5rem; */
-    border: 1px solid #213547;
-    bottom: 0;
-    margin: 1rem 0;
-}
-
-
-.invisible {
-    opacity: 0;
-}
-
-.invisible,
 .tile {
     cursor: pointer;
     display: flex;
@@ -89,7 +222,8 @@ body {
     align-items: center;
     width: 25%;
     height: 50px;
-    padding: 2rem 0;
+    padding: 1rem 0;
+    margin: 10px 1rem;
 }
 
 #toasts {
@@ -102,7 +236,7 @@ body {
 }
 
 .toast {
-    background-color: #fff;
+    color: #fff;
     border-radius: 5px;
     padding: 1rem 2rem;
     margin: 0.5rem;
@@ -117,7 +251,7 @@ body {
 }
 
 .toast.error {
-    background: rgb(44, 1, 1);
+    background: rgb(134, 3, 3);
 }
 
 @media (prefers-color-scheme: light) {
