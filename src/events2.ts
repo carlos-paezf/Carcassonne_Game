@@ -3,15 +3,32 @@ import { GameV2 } from "./classes/game2";
 
 
 export class EventsV2 {
-    constructor ( private game: GameV2 ) { }
+    private game: GameV2;
 
+    constructor ( private _size: number, private _name: string ) {
+        this.game = new GameV2( this._size, this._name || 'Carlos' );
+    }
+
+    startGame () {
+        ( document.getElementById( 'pos-x' ) as HTMLInputElement ).max = `${ this._size - 1 }`;
+        ( document.getElementById( 'pos-y' ) as HTMLInputElement ).max = `${ this._size - 1 }`;
+        this.generateBoard();
+        this.updateInfoGame();
+        this.generateCardTiles();
+    }
+
+    updateGame () {
+        this.generateBoard();
+        this.updateInfoGame();
+        this.generateCardTiles();
+    }
 
     /**
      * It updates the information of the game on the screen.
      */
     updateInfoGame () {
         document.getElementById( 'turn' )!.innerText = this.game.getTurn.toString();
-        document.getElementById( 'tiles' )!.innerText = this.game.getTilesInDeck.toString();
+        document.getElementById( 'tiles-deck' )!.innerText = this.game.getTilesInDeck.toString();
         document.getElementById( 'discards' )!.innerText = this.game.getDiscardsCounter.toString();
         document.getElementById( 'score' )!.innerText = this.game.getScore.toString();
     }
@@ -48,7 +65,7 @@ export class EventsV2 {
 
     generateCardTiles () {
         const tiles = this.game.getHand.map( ( tile, index ) => `
-            <span class="tile" id="${ index }">${ tile.type }${ tile.direction ? ` - ${ tile.direction }` : '' }</span>
+            <button class="tile btn" id="${ index }">${ tile.toString }</button>
         `);
 
         document.getElementById( 'hand' )!.innerHTML = tiles.join( '' );
@@ -58,6 +75,38 @@ export class EventsV2 {
     discardHand () {
         this.game.discardHand();
         this.generateCardTiles();
+    }
+
+
+    openOptions ( index: number ) {
+        const selectedTile = this.game.getHand[ index ];
+
+        document.getElementById( 'tiles-options' )!.style.display = 'flex';
+
+        ( document.getElementById( 'play' ) as HTMLFormElement )!.reset();
+
+        document.getElementById( 'info-tile' )!.textContent = `${ selectedTile.toString }`;
+
+        ( document.getElementById( 'play' ) as HTMLFormElement ).addEventListener( 'submit', () => {
+            console.log( 'enviado' );
+            const row = +( document.getElementById( 'pos-x' ) as HTMLInputElement ).value;
+            const col = +( document.getElementById( 'pos-y' ) as HTMLInputElement ).value;
+            this.playTile( selectedTile, row, col );
+        } );
+
+        this.updateGame();
+
+        // TODO: Evaluar disponibilidad y resetear eventos
+    }
+
+
+    closeOptions () {
+        ( document.getElementById( 'tiles-options' ) as HTMLElement )!.style.display = 'none';
+    }
+
+
+    playTile ( tile: Tile, row: number, col: number ) {
+        this.game.playTile( tile, row, col );
     }
 
 
