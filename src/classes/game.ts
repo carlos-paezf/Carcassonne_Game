@@ -1,4 +1,4 @@
-import { RoadDirection, tileInterval, tilePoint, TileType } from '../constants';
+import { RoadDirection, tileInterval, TilePoint, TileType } from '../constants';
 import { Tile } from "./tile";
 import { TileGenerator } from './tile-generator';
 import { getNeighborhoodParams, VonNeumannNeighborhoods } from './von-neumann-neighborhoods';
@@ -172,19 +172,19 @@ export class Game {
 
         switch ( tileType ) {
             case TileType.ROAD:
-                this.score += tilePoint.road;
-                this._increasePoints( TileType.ABBEY, params, tilePoint.abbey );
+                this.score += TilePoint.road;
+                this._increasePoints( TileType.ABBEY, params, TilePoint.abbey );
                 break;
 
             case TileType.CITY:
-                this.score += tilePoint.city;
-                this._increasePoints( TileType.ABBEY, params, tilePoint.abbey );
-                this._increasePoints( TileType.CITY, params, tilePoint.chain );
+                this.score += TilePoint.city;
+                this._increasePoints( TileType.ABBEY, params, TilePoint.abbey );
+                this._increasePoints( TileType.CITY, params, TilePoint.chain );
                 break;
 
             case TileType.ABBEY:
-                this.score += tilePoint.abbey;
-                this._increasePoints( TileType.ABBEY, params, tilePoint.abbey );
+                this.score += TilePoint.abbey;
+                this._increasePoints( TileType.ABBEY, params, TilePoint.abbey );
                 break;
 
             default:
