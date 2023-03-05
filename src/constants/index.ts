@@ -15,11 +15,11 @@ export const tileInterval = {
 };
 
 
-export const tilePoint = {
-    road: 1,
-    abbey: 1,
-    city: 2,
-    chain: 1
+export enum TilePoint {
+    ROAD = 1,
+    ABBEY = 1,
+    CITY = 2,
+    CHAIN = 1
 };
 
 
@@ -30,3 +30,10 @@ export enum RoadDirection {
     THREE_WAY = 'THREE_WAY',
     CORNER = 'CORNER'
 };
+
+
+export enum IncrementType {
+    ABBEY_NEIGHBORHOOD = 'ABBEY_NEIGHBORHOOD',
+    BY_CITY_CHAIN = 'BY_CITY_CHAIN',
+    BY_NEIGHBORING_ABBEY = 'BY_NEIGHBORING_ABBEY'
+}
