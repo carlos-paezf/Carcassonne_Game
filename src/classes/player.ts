@@ -1,4 +1,4 @@
-import { TILES_PER_HAND, TileType, tilePoint } from "../constants";
+import { IncrementType, TILES_PER_HAND, TilePoint, TileType } from "../constants";
 import { Board } from "./board";
 import { Deck } from './deck';
 import { Tile } from "./tile";
@@ -71,14 +71,36 @@ export class Player {
      * @param {getNeighborhoodParams} neighborhoodParams - getNeighborhoodParams
      * @param {number} points - number - the amount of points to add to the score
      */
-    private _increasePoints ( tileType: keyof typeof TileType, neighborhoodParams: getNeighborhoodParams, points: number ): void {
-        const tilesNeighborhood: number[][] = VonNeumannNeighborhoods.getNeighborhood( neighborhoodParams, tileType === TileType.ABBEY );
+    private _increasePoints ( incrementType: keyof typeof IncrementType, neighborhoodParams: getNeighborhoodParams ): void {
+        const tilesNeighborhood: number[][] = VonNeumannNeighborhoods.getNeighborhood(
+            neighborhoodParams,
+            incrementType === IncrementType.ABBEY_NEIGHBORHOOD
+        );
 
-        tilesNeighborhood.forEach( ( nt ) => {
-            const tile = this.board.getTile( nt[ 0 ], nt[ 1 ] );
-            if ( tile?.type === tileType || ( tileType === TileType.ABBEY && tile ) )
-                this.score += points;
-        } );
+        switch ( incrementType ) {
+            case IncrementType.BY_NEIGHBORING_ABBEY:
+                tilesNeighborhood.forEach( ( nt ) => {
+                    if ( this.board.getTile( nt[ 0 ], nt[ 1 ] )?.type === TileType.ABBEY )
+                        this.score += TilePoint.ABBEY;
+                } );
+                break;
+
+            case IncrementType.BY_CITY_CHAIN:
+                tilesNeighborhood.forEach( ( nt ) => {
+                    if ( this.board.getTile( nt[ 0 ], nt[ 1 ] )?.type === TileType.CITY )
+                        this.score += TilePoint.CHAIN;
+                } );
+                break;
+
+            case IncrementType.ABBEY_NEIGHBORHOOD:
+                tilesNeighborhood.forEach( ( nt ) => {
+                    if ( this.board.getTile( nt[ 0 ], nt[ 1 ] ) )
+                        this.score += TilePoint.ABBEY;
+                } );
+
+            default:
+                break;
+        }
     };
 
 
@@ -99,19 +121,18 @@ export class Player {
 
         switch ( tileType ) {
             case TileType.ROAD:
-                this.score += tilePoint.road;
-                this._increasePoints( TileType.ABBEY, params, tilePoint.abbey );
+                this.score += TilePoint.ROAD;
+                this._increasePoints( IncrementType.BY_NEIGHBORING_ABBEY, params );
                 break;
 
             case TileType.CITY:
-                this.score += tilePoint.city;
-                this._increasePoints( TileType.ABBEY, params, tilePoint.abbey );
-                this._increasePoints( TileType.CITY, params, tilePoint.chain );
+                this.score += TilePoint.CITY;
+                this._increasePoints( IncrementType.BY_CITY_CHAIN, params );
+                this._increasePoints( IncrementType.BY_NEIGHBORING_ABBEY, params );
                 break;
 
             case TileType.ABBEY:
-                this.score += tilePoint.abbey;
-                this._increasePoints( TileType.ABBEY, params, tilePoint.abbey );
+                this._increasePoints( IncrementType.ABBEY_NEIGHBORHOOD, params );
                 break;
 
             default:
