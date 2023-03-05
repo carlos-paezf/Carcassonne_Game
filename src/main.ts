@@ -4,6 +4,47 @@ import { EventsV2 } from './events2';
 import './style.css';
 
 
+/* try {
+    const game = new GameV2( 11, 'Carlos' );
+
+    console.table( game.getBoard );
+    console.log( game.getScore );
+
+    console.table( game.getHand );
+    game.playTile( game.getHand[ 0 ], 6, 5 );
+    console.table( game.getBoard );
+    console.log( game.getScore );
+
+    console.table( game.getHand );
+    game.playTile( game.getHand[ 0 ], 5, 4 );
+    console.table( game.getBoard );
+    console.log( game.getScore );
+
+    console.table( game.getHand );
+    game.playTile( game.getHand[ 0 ], 4, 5 );
+    console.table( game.getBoard );
+    console.log( game.getScore );
+
+    console.table( game.getHand );
+    game.playTile( game.getHand[ 0 ], 5, 6 );
+    console.table( game.getBoard );
+    console.log( game.getScore );
+
+    console.table( game.getHand );
+    game.playTile( game.getHand[ 0 ], 4, 4 );
+    console.table( game.getBoard );
+    console.log( game.getScore );
+
+    console.table( game.getHand );
+    game.playTile( game.getHand[ 0 ], 6, 6 );
+    console.table( game.getBoard );
+    console.log( game.getScore );
+} catch ( error ) {
+    EventsV2.createNotification( error );
+} */
+
+
+
 const inputSize: HTMLInputElement = document.getElementById( "size" )! as HTMLInputElement;
 const inputName: HTMLInputElement = document.getElementById( "name" )! as HTMLInputElement;
 
@@ -69,8 +110,9 @@ document.getElementById( 'close' )!.addEventListener( 'click', () => {
 
 
 
+/*
 const tiles = document.querySelectorAll<HTMLButtonElement>( '.tile' );
-// const empties = document.querySelectorAll<HTMLTableRowElement>( '.empty' );
+const empties = document.querySelectorAll<HTMLTableRowElement>( '.empty' );
 
 
 tiles.forEach( ( tile, index ) => {
@@ -79,56 +121,55 @@ tiles.forEach( ( tile, index ) => {
     } );
 } );
 
-// let game: Game;
+let game: Game;
 
-// function initGame () {
-//     try {
-//         game = new Game( size ?? 9 );
-//         const events = new Events( game );
+function initGame () {
+    try {
+        game = new Game( size ?? 9 );
+        const events = new Events( game );
 
-//         events.updateTurnHandAndScore();
-//         events.generateBoard();
-//         events.generateCardTiles();
-//     } catch ( error ) {
-//         Events.createNotification( error );
-//     }
-// }
+        events.updateTurnHandAndScore();
+        events.generateBoard();
+        events.generateCardTiles();
+    } catch ( error ) {
+        Events.createNotification( error );
+    }
+}
 
-// initGame();
-
-
-// function updateGame () {
-//     try {
-//         const events = new Events( game );
-
-//         events.updateTurnHandAndScore();
-//         events.generateCardTiles();
-//     } catch ( error ) {
-//         Events.createNotification( error );
-//     }
-// }
+initGame();
 
 
-// document.getElementById( 'form' )!.addEventListener( 'submit', ( e: any ) => {
-//     e.preventDefault();
-//     size = +input.value;
+function updateGame () {
+    try {
+        const events = new Events( game );
 
-//     document.getElementById( 'game' )!.innerHTML = '';
-//     initGame();
-// } );
-
-
-// document.getElementById( 'discard' )!.addEventListener( 'click', () => {
-//     try {
-//         game._discardHand();
-//         updateGame();
-//     } catch ( error ) {
-//         Events.createNotification( error );
-//     }
-// } );
+        events.updateTurnHandAndScore();
+        events.generateCardTiles();
+    } catch ( error ) {
+        Events.createNotification( error );
+    }
+}
 
 
-/*
+document.getElementById( 'form' )!.addEventListener( 'submit', ( e: any ) => {
+    e.preventDefault();
+    size = +input.value;
+
+    document.getElementById( 'game' )!.innerHTML = '';
+    initGame();
+} );
+
+
+document.getElementById( 'discard' )!.addEventListener( 'click', () => {
+    try {
+        game._discardHand();
+        updateGame();
+    } catch ( error ) {
+        Events.createNotification( error );
+    }
+} );
+
+
 type HTMLElementEvent<T extends HTMLElement> = Event & { target: T; };
 
 let draggedItem: string | null = null;
