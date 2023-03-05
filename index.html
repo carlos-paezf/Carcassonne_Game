@@ -5,63 +5,79 @@
         <meta charset="UTF-8" />
         <link rel="icon" type="image/svg+xml" href="/vite.svg" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css"
+            integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog=="
+            crossorigin="anonymous" />
         <title>Vite + TS</title>
     </head>
 
     <body>
         <div id="app">
-            <section>
+            <section id="setting-game">
                 <form id="form" type="submit">
-                    <label for="size">Board Size: </label>
-                    <input type="number" id="size" min="3" value="9">
-                    <button type="submit">Create Board</button>
+                    <div class="form-group">
+                        <div class="form-control">
+                            <label for="size">Board Size: </label>
+                            <input type="number" id="size" min="3" value="11">
+                        </div>
+                        <div class="form-control">
+                            <label for="name">Player Name: </label>
+                            <input type="string" id="name">
+                        </div>
+                    </div>
+
+                    <button class="btn btn-success" type="submit">Start Game</button>
                 </form>
             </section>
 
-            <section id="infoGame">
-                <table>
-                    <thead>
-                        <tr>
-                            <th class="">Actual Turn</th>
-                            <th class="">Tiles in Deck</th>
-                            <th class="">Number of discards remaining</th>
-                            <th class="">Score</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td class="" id="turn"></td>
-                            <td class="" id="tiles"></td>
-                            <td class="" id="discards"></td>
-                            <td class="" id="score"></td>
-                        </tr>
-                    </tbody>
+            <section id="info-game">
+                <table class="info-game">
+                    <tr>
+                        <th width="25%">Actual Turn</th>
+                        <th width="25%">Tiles in Deck</th>
+                        <th width="25%">Number of discards remaining</th>
+                        <th width="25%">Score</th>
+                    </tr>
+                    <tr>
+                        <td id="turn"></td>
+                        <td id="tiles-deck"></td>
+                        <td id="discards"></td>
+                        <td id="score"></td>
+                    </tr>
                 </table>
             </section>
 
-            <section>
+            <section id="tiled-hand">
+                <div id="hand"></div>
+                <button class="btn btn-danger" id="discard">Discard Hand</button>
+            </section>
+
+            <section id="board-game">
                 <table id="game"></table>
             </section>
 
-            <section>
-                <div id="hand"></div>
+            <section id="tiles-options" style="display: none;">
                 <div class="options">
-                    <span>Selected Tile: </span>
+                    <i id="close" class="far fa-times-circle"></i>
+
+                    <span id="info-tile">Selected Tile: </span>
+
                     <form id="play" type="submit">
-                        <div>
-                            <label for="pos-x">Input the X position</label>
-                            <input id="pos-x" type="number" min="0">
-                        </div>
-                        <div>
-                            <label for="pos-y">Input the Y position</label>
-                            <input id="pos-y" type="number" min="0">
+                        <div class="form-group">
+                            <div class="form-control">
+                                <label for="pos-x">Input the X position:</label>
+                                <input id="pos-x" type="number" min="0" placeholder="0">
+                            </div>
+                            <div class="form-control">
+                                <label for="pos-y">Input the Y position:</label>
+                                <input id="pos-y" type="number" min="0" placeholder="0">
+                            </div>
                         </div>
 
-                        <button type="submit">Place Tile on the Board</button>
+                        <button class="btn btn-success" type="submit">Place Tile on the Board</button>
                     </form>
                 </div>
 
-                <button id="discard">Discard Hand</button>
             </section>
 
             <span id="toasts"></span>
